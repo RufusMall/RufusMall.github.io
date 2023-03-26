@@ -4,8 +4,9 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-Checkout
+
       - name: Checkout
         uses: actions/checkout@v3
+        
       - name: Deploy
         uses: kamranahmedse/github-pages-blog-action@v0.0.10
