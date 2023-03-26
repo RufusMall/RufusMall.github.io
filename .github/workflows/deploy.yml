@@ -4,11 +4,5 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Deploy
-        uses: RufusMall/github-pages-blog-action@v0.0.10
-        with:
-          branch: gh-pages # Optional branch for GitHub Pages
-
+      - name: Create Blog from Markdown Files
+      	uses: kamranahmedse/github-pages-blog-action@v0.0.10
