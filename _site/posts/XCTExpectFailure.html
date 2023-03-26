@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>TheSwiftBlog.github.io</title>
+<meta name="generator" content="Jekyll v3.9.3" />
+<meta property="og:title" content="TheSwiftBlog.github.io" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="http://localhost:4000/posts/XCTExpectFailure.html" />
+<meta property="og:url" content="http://localhost:4000/posts/XCTExpectFailure.html" />
+<meta property="og:site_name" content="TheSwiftBlog.github.io" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="TheSwiftBlog.github.io" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","headline":"TheSwiftBlog.github.io","url":"http://localhost:4000/posts/XCTExpectFailure.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preload" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" as="style" type="text/css" crossorigin>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="/assets/css/style.css?v=f6c7b65dc80fda4c08bcd054c181c37add176c0c">
+    <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
+
+<!-- Setup Google Analytics -->
+
+
+
+<!-- You can set your favicon here -->
+<!-- link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" -->
+
+<!-- end custom head snippets -->
+
+  </head>
+  <body>
+    <a id="skip-to-content" href="#content">Skip to the content.</a>
+
+    <header class="page-header" role="banner">
+      <h1 class="project-name">TheSwiftBlog.github.io</h1>
+      <h2 class="project-tagline"></h2>
+      
+        <a href="https://github.com/RufusMall/TheSwiftBlog.github.io" class="btn">View on GitHub</a>
+      
+      
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <p>Hi everyone,</p>
+
+<p>In this blog post, I want to share with you a handy feature of XCTest framework that can help you write better tests: XCTExpectFailure.</p>
+
+<p>XCTExpectFailure is a function that allows you to mark a test assertion as expected to fail. This means that if the assertion fails, the test will not fail, but if the assertion passes, the test will fail. This is useful for cases where you have a known bug or limitation in your code that you want to document with a test, but you don’t want to make your test suite red until you fix it.</p>
+
+<p>Let me show you an example of how to use XCTExpectFailure. Suppose you have a function that calculates the factorial of a given integer:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>func factorial(_ n: Int) -&gt; Int {
+  guard n &gt;= 0 else { return -1 }
+  if n == 0 || n == 1 {
+    return 1
+  } else {
+    return n * factorial(n - 1)
+  }
+}
+</code></pre></div></div>
+
+<p>Now, you want to write some tests for this function, but you know that it has a bug: it will overflow for large values of n. You can use XCTExpectFailure to mark this test as expected to fail:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>func testFactorialOverflow() {
+  // This assertion will fail because factorial(21) is larger than Int.max
+  XCTExpectFailure("Factorial function overflows for large values of n") {
+    XCTAssertEqual(factorial(21), 51090942171709440000)
+  }
+}
+</code></pre></div></div>
+<p>When you run this test, you will see something like this in the console:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Test Case '-[FactorialTests testFactorialOverflow]' started.
+XCTExpectFailure: Factorial function overflows for large values of n - Assertion failed but was expected to fail.
+Test Case '-[FactorialTests testFactorialOverflow]' passed (0.001 seconds).
+</code></pre></div></div>
+<p>As you can see, the test passed even though the assertion failed, because it was marked with XCTExpectFailure. However, if you fix the bug in your factorial function and make it handle large values of n correctly, the test will fail:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Test Case '-[FactorialTests testFactorialOverflow]' started.
+XCTExpectFailure: Factorial function overflows for large values of n - Assertion passed unexpectedly.
+/Users/.../FactorialTests.swift:18: error: -[FactorialTests testFactorialOverflow] : XCTAssertEqual failed: ("51090942171709440000") is not equal to ("51090942171709440000") - 
+Test Case '-[FactorialTests testFactorialOverflow]' failed (0.001 seconds).
+</code></pre></div></div>
+
+<p>This way, XCTExpectFailure helps you keep track of the known issues in your code and reminds you to fix them when they are no longer valid.</p>
+
+<p>Personally I don’t think the above scenario is too useful in practice and might actually cause issues. However, one area where I have found a good practical use is to ensure a third party test framework is working correctly.</p>
+
+<p>If you are using a third party test framework that internally calls XCTAssert functions on your behalf, you can add some tests to your consuming code to ensure the assertions are working as expected. These tests will then alert you if an upgrade or switch to an alternative third party framework no longer asserts for the the cases you expect it to.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>func testSnapshotFrameworkFailsIfImagesDontMatch() {
+  // This assertion should fail as the snapshots do not match
+  XCTExpectFailure("Should assert if images don't match") {
+    // invoke third party snapshot testing framework here.
+  }
+}
+</code></pre></div></div>
+
+<p>I hope you found this blog post useful and learned something new about XCTest framework. Thanks for reading!</p>
+
+
+      <footer class="site-footer">
+        
+          <span class="site-footer-owner"><a href="https://github.com/RufusMall/TheSwiftBlog.github.io">TheSwiftBlog.github.io</a> is maintained by <a href="https://github.com/RufusMall">RufusMall</a>.</span>
+        
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span>
+      </footer>
+    </main>
+  </body>
+</html>
